@@ -49,10 +49,10 @@ export default function Contact({ onBookClick }) {
               <div>
                 <p className="text-gold text-xs uppercase tracking-widest mb-1">Phone / WhatsApp</p>
                 <a
-                  href="tel:+254726526802"
+                  href="tel:+254794408594"
                   className="text-white hover:text-gold transition-colors font-medium"
                 >
-                  +254 726 526802
+                  +254 794408594
                 </a>
               </div>
             </div>
@@ -65,7 +65,7 @@ export default function Contact({ onBookClick }) {
               <div>
                 <p className="text-gold text-xs uppercase tracking-widest mb-1">Email</p>
                 <a
-                  href="mailto:info@kaimosihotel.com"
+                  href="mailto:abuririwycliffe@gmail.com"
                   className="text-white hover:text-gold transition-colors font-medium"
                 >
                   info@kaimosihotel.com
@@ -105,7 +105,7 @@ export default function Contact({ onBookClick }) {
 
             {/* Action buttons */}
             <div className="flex flex-wrap gap-4 pt-4">
-              <a href="tel:+254726526802" className="btn-primary">
+              <a href="tel:+254794408594" className="btn-primary">
                 Call Now
               </a>
               <a
