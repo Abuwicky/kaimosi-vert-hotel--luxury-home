@@ -1,41 +1,71 @@
-import { useState, useEffect } from 'react';
-import { X, Calendar, Users, Bed, ChevronDown } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { X, Calendar, Users, Bed } from "lucide-react";
+import { supabase } from "../supabaseClient"; // ✅ ADDED
 
 const roomTypes = [
-  'Standard Room',
-  'Deluxe Room',
-  'Superior Room',
-  'Forest Suite',
-  'Family Room',
+  "Standard Room",
+  "Deluxe Room",
+  "Superior Room",
+  "Forest Suite",
+  "Family Room",
 ];
 
 export default function BookingModal({ isOpen, onClose }) {
   const [form, setForm] = useState({
-    checkin: '',
-    checkout: '',
-    guests: '1',
-    room: '',
-    name: '',
-    phone: '',
+    checkin: "",
+    checkout: "",
+    guests: "1",
+    room: "",
+    name: "",
+    phone: "",
   });
   const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
-    if (isOpen) document.body.style.overflow = 'hidden';
-    else document.body.style.overflow = '';
-    return () => { document.body.style.overflow = ''; };
+    if (isOpen) document.body.style.overflow = "hidden";
+    else document.body.style.overflow = "";
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [isOpen]);
 
   const handleChange = (e) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = (e) => {
+  // ✅ UPDATED HANDLE SUBMIT (Supabase + WhatsApp)
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const msg = `Hello, I'd like to book a room at Kaimosi Vert Hotel.%0AName: ${form.name}%0ACheck-in: ${form.checkin}%0ACheck-out: ${form.checkout}%0AGuests: ${form.guests}%0ARoom: ${form.room || 'Any Available'}%0APhone: ${form.phone}`;
-    window.open(`https://wa.me/254726526802?text=${msg}`, '_blank');
+
+    // 1️⃣ Save to Supabase
+    const { error } = await supabase.from("bookings").insert([
+      {
+        name: form.name,
+        date: form.checkin,
+        checkout: form.checkout,
+        guests: parseInt(form.guests),
+        room: form.room,
+        phone: form.phone,
+      },
+    ]);
+
+    if (error) {
+      console.error(error);
+      alert("Failed to save booking");
+      return;
+    }
+
+    // 2️⃣ WhatsApp message
+    const msg = `Hello, I'd like to book a room at Kaimosi Vert Hotel.%0AName: ${form.name}%0ACheck-in: ${form.checkin}%0ACheck-out: ${form.checkout}%0AGuests: ${form.guests}%0ARoom: ${form.room || "Any Available"}%0APhone: ${form.phone}`;
+
+    window.open(`https://wa.me/254794408594?text=${msg}`, "_blank");
+
+    // 3️⃣ UI feedback
     setSubmitted(true);
-    setTimeout(() => { setSubmitted(false); onClose(); }, 3000);
+    setTimeout(() => {
+      setSubmitted(false);
+      onClose();
+    }, 3000);
   };
 
   if (!isOpen) return null;
@@ -54,7 +84,9 @@ export default function BookingModal({ isOpen, onClose }) {
         <div className="bg-forest px-8 py-6 flex items-center justify-between">
           <div>
             <p className="section-label text-xs">Start Your Journey</p>
-            <h2 className="font-serif text-2xl text-white font-light">Reserve Your Stay</h2>
+            <h2 className="font-serif text-2xl text-white font-light">
+              Reserve Your Stay
+            </h2>
           </div>
           <button
             onClick={onClose}
@@ -70,14 +102,20 @@ export default function BookingModal({ isOpen, onClose }) {
             <div className="w-16 h-16 bg-forest/10 rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="text-3xl">✓</span>
             </div>
-            <h3 className="font-serif text-2xl text-forest mb-2">Request Sent!</h3>
-            <p className="text-charcoal/60">We'll confirm your booking via WhatsApp shortly.</p>
+            <h3 className="font-serif text-2xl text-forest mb-2">
+              Request Sent!
+            </h3>
+            <p className="text-charcoal/60">
+              We'll confirm your booking via WhatsApp shortly.
+            </p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="p-8 space-y-5">
             {/* Name */}
             <div>
-              <label className="block text-xs uppercase tracking-widest text-charcoal/60 mb-2">Your Name</label>
+              <label className="block text-xs uppercase tracking-widest text-charcoal/60 mb-2">
+                Your Name
+              </label>
               <input
                 type="text"
                 name="name"
@@ -93,7 +131,8 @@ export default function BookingModal({ isOpen, onClose }) {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs uppercase tracking-widest text-charcoal/60 mb-2">
-                  <Calendar size={10} className="inline mr-1" />Check-in
+                  <Calendar size={10} className="inline mr-1" />
+                  Check-in
                 </label>
                 <input
                   type="date"
@@ -101,13 +140,14 @@ export default function BookingModal({ isOpen, onClose }) {
                   value={form.checkin}
                   onChange={handleChange}
                   required
-                  min={new Date().toISOString().split('T')[0]}
+                  min={new Date().toISOString().split("T")[0]}
                   className="w-full border border-charcoal/20 bg-white px-4 py-3 text-sm focus:outline-none focus:border-forest transition-colors"
                 />
               </div>
               <div>
                 <label className="block text-xs uppercase tracking-widest text-charcoal/60 mb-2">
-                  <Calendar size={10} className="inline mr-1" />Check-out
+                  <Calendar size={10} className="inline mr-1" />
+                  Check-out
                 </label>
                 <input
                   type="date"
@@ -115,7 +155,7 @@ export default function BookingModal({ isOpen, onClose }) {
                   value={form.checkout}
                   onChange={handleChange}
                   required
-                  min={form.checkin || new Date().toISOString().split('T')[0]}
+                  min={form.checkin || new Date().toISOString().split("T")[0]}
                   className="w-full border border-charcoal/20 bg-white px-4 py-3 text-sm focus:outline-none focus:border-forest transition-colors"
                 />
               </div>
@@ -125,7 +165,8 @@ export default function BookingModal({ isOpen, onClose }) {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs uppercase tracking-widest text-charcoal/60 mb-2">
-                  <Users size={10} className="inline mr-1" />Guests
+                  <Users size={10} className="inline mr-1" />
+                  Guests
                 </label>
                 <select
                   name="guests"
@@ -133,14 +174,17 @@ export default function BookingModal({ isOpen, onClose }) {
                   onChange={handleChange}
                   className="w-full border border-charcoal/20 bg-white px-4 py-3 text-sm focus:outline-none focus:border-forest transition-colors appearance-none"
                 >
-                  {[1,2,3,4,5,6].map((n) => (
-                    <option key={n} value={n}>{n} Guest{n > 1 ? 's' : ''}</option>
+                  {[1, 2, 3, 4, 5, 6].map((n) => (
+                    <option key={n} value={n}>
+                      {n} Guest{n > 1 ? "s" : ""}
+                    </option>
                   ))}
                 </select>
               </div>
               <div>
                 <label className="block text-xs uppercase tracking-widest text-charcoal/60 mb-2">
-                  <Bed size={10} className="inline mr-1" />Room Type
+                  <Bed size={10} className="inline mr-1" />
+                  Room Type
                 </label>
                 <select
                   name="room"
@@ -150,7 +194,9 @@ export default function BookingModal({ isOpen, onClose }) {
                 >
                   <option value="">Any Room</option>
                   {roomTypes.map((r) => (
-                    <option key={r} value={r}>{r}</option>
+                    <option key={r} value={r}>
+                      {r}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -158,7 +204,9 @@ export default function BookingModal({ isOpen, onClose }) {
 
             {/* Phone */}
             <div>
-              <label className="block text-xs uppercase tracking-widest text-charcoal/60 mb-2">Phone / WhatsApp</label>
+              <label className="block text-xs uppercase tracking-widest text-charcoal/60 mb-2">
+                Phone / WhatsApp
+              </label>
               <input
                 type="tel"
                 name="phone"
@@ -169,19 +217,22 @@ export default function BookingModal({ isOpen, onClose }) {
               />
             </div>
 
-            {/* Urgency */}
-            <div className="bg-gold/10 border border-gold/30 px-4 py-3 flex items-center gap-3">
-              <span className="text-lg">🔥</span>
-              <p className="text-sm text-forest font-medium">Limited rooms available — book now to secure your stay!</p>
-            </div>
-
-            <button type="submit" className="btn-primary w-full text-center py-4">
+            {/* CTA */}
+            <button
+              type="submit"
+              className="btn-primary w-full text-center py-4"
+            >
               Confirm via WhatsApp
             </button>
 
             <p className="text-center text-xs text-charcoal/40">
-              Or call us directly:{' '}
-              <a href="tel:+254726526802" className="text-forest hover:underline">+254 726 526802</a>
+              Or call us directly:{" "}
+              <a
+                href="tel:+254794408594"
+                className="text-forest hover:underline"
+              >
+                +254 794408594
+              </a>
             </p>
           </form>
         )}
