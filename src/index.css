@@ -1,0 +1,106 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply font-sans text-charcoal bg-cream;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+  }
+
+  #root {
+    width: 100%;
+    min-height: 100vh;
+    text-align: left;
+    border: none;
+    margin: 0;
+    display: block;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-serif;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-gold text-forest-dark font-semibold px-8 py-3 uppercase tracking-widest text-sm transition-all duration-300 hover:bg-gold-dark hover:shadow-lg active:scale-95 inline-block;
+  }
+
+  .btn-outline {
+    @apply border-2 border-white text-white font-semibold px-8 py-3 uppercase tracking-widest text-sm transition-all duration-300 hover:bg-white hover:text-forest active:scale-95 inline-block;
+  }
+
+  .btn-outline-dark {
+    @apply border-2 border-forest text-forest font-semibold px-8 py-3 uppercase tracking-widest text-sm transition-all duration-300 hover:bg-forest hover:text-white active:scale-95 inline-block;
+  }
+
+  .section-label {
+    @apply text-gold uppercase tracking-[0.3em] text-xs font-medium font-sans mb-3;
+  }
+
+  .section-title {
+    @apply font-serif text-4xl md:text-5xl font-light leading-tight;
+  }
+
+  .nav-link {
+    @apply text-sm uppercase tracking-widest font-medium transition-colors duration-200 hover:text-gold;
+  }
+}
+
+@layer utilities {
+  .text-shadow {
+    text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+  }
+
+  .text-shadow-sm {
+    text-shadow: 0 1px 8px rgba(0,0,0,0.3);
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background: #FAF6EF;
+}
+::-webkit-scrollbar-thumb {
+  background: #C8A96A;
+  border-radius: 3px;
+}
+
+/* Reveal animation */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.9s ease, transform 0.9s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+
+/* Hero parallax */
+.hero-bg {
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+}
+
+@media (max-width: 768px) {
+  .hero-bg {
+    background-attachment: scroll;
+  }
+}
