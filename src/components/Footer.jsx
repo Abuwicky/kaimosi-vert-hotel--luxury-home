@@ -95,13 +95,13 @@ export default function Footer({ onBookClick }) {
               <div className="flex gap-3 items-center">
                 <Phone size={14} className="text-gold flex-shrink-0" />
                 <a href="tel:+254726526802" className="text-white/50 hover:text-gold text-sm transition-colors">
-                  +254 726 526802
+                  +254 794408594
                 </a>
               </div>
               <div className="flex gap-3 items-center">
                 <Mail size={14} className="text-gold flex-shrink-0" />
                 <a href="mailto:info@kaimosihotel.com" className="text-white/50 hover:text-gold text-sm transition-colors">
-                  info@kaimosihotel.com
+                  abuririwycliffe@gmail.com
                 </a>
               </div>
             </div>
