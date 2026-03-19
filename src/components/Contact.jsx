@@ -68,7 +68,7 @@ export default function Contact({ onBookClick }) {
                   href="mailto:abuririwycliffe@gmail.com"
                   className="text-white hover:text-gold transition-colors font-medium"
                 >
-                  info@kaimosihotel.com
+                  abuririwycliffe@gmail.com
                 </a>
               </div>
             </div>
