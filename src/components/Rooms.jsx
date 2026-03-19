@@ -193,7 +193,7 @@ export default function Rooms({ onBook }) {
         <div className="text-center mt-16">
           <p className="text-charcoal/50 text-sm mb-4">Need help choosing? Contact us directly.</p>
           <a href="tel:+254726526802" className="btn-outline-dark">
-            Call +254 726 526802
+            Call +254 794408594
           </a>
         </div>
       </div>
