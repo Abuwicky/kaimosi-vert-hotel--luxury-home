@@ -1,11 +1,5 @@
 import { useState, useEffect } from "react";
 import { X, Calendar, Users, Bed } from "lucide-react";
-import { supabase } from "../supabaseClient"; // ✅ ADDED
-
-const roomTypes = [
-  "Standard Room",
-  import { useState, useEffect } from "react";
-import { X, Calendar, Users, Bed } from "lucide-react";
 import { supabase } from "../supabaseClient";
 
 const roomTypes = [
@@ -20,8 +14,8 @@ export default function BookingModal({ isOpen, onClose, userId }) {
   const [form, setForm] = useState({
     checkin: "",
     checkout: "",
-    guests: "1",
-    room: "",
+    guests: 1,
+    room: "", // we will later map this to room_id if needed
     name: "",
     phone: "",
   });
@@ -42,29 +36,29 @@ export default function BookingModal({ isOpen, onClose, userId }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Insert booking into Supabase
-    const { data: bookingData, error: bookingError } = await supabase
+    // Insert booking into Supabase (match schema exactly)
+    const { data, error } = await supabase
       .from("bookings")
       .insert([
         {
           user_id: userId || null,
-          room_id: null, // Can later link selected room type to a room table
+          room_id: null, // can map later if you have a rooms table
           checkin: form.checkin,
           checkout: form.checkout,
-          guests: parseInt(form.guests),
-          status: "pending", // default booking status
+          guests: parseInt(form.guests, 10),
+          status: "pending",
         },
       ])
       .select()
       .single();
 
-    if (bookingError) {
-      console.error("Supabase error:", bookingError.message);
-      alert("Error: " + bookingError.message);
+    if (error) {
+      console.error("Supabase error:", error.message);
+      alert("Error: " + error.message);
       return;
     }
 
-    console.log("Inserted booking:", bookingData);
+    console.log("Inserted booking:", data);
 
     // WhatsApp message
     const msg = `Hello, I'd like to book a room at Kaimosi Vert Hotel.%0AName: ${form.name}%0ACheck-in: ${form.checkin}%0ACheck-out: ${form.checkout}%0AGuests: ${form.guests}%0ARoom: ${form.room || "Any Available"}%0APhone: ${form.phone}`;
