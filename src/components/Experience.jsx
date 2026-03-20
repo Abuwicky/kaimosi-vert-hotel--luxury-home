@@ -1,26 +1,26 @@
-import { useEffect, useRef } from 'react';
-import { Leaf, Heart, Globe, Sun } from 'lucide-react';
+import { useEffect, useRef } from "react";
+import { Leaf, Heart, Globe, Sun } from "lucide-react";
 
 const highlights = [
   {
     icon: Leaf,
-    title: 'Kaimosi Forest Retreat',
-    desc: 'Surrounded by one of Western Kenya\'s ancient forests, our hotel offers a rare chance to breathe pristine air and witness breathtaking biodiversity.',
+    title: "Kaimosi Forest Retreat",
+    desc: "Surrounded by one of Western Kenya's ancient forests, our hotel offers a rare chance to breathe pristine air and witness breathtaking biodiversity.",
   },
   {
     icon: Heart,
-    title: 'Authentic Hospitality',
-    desc: 'Our staff treats every guest like family — warm, attentive, and genuinely caring. Experience hospitality that feels deeply human and personal.',
+    title: "Authentic Hospitality",
+    desc: "Our staff treats every guest like family — warm, attentive, and genuinely caring. Experience hospitality that feels deeply human and personal.",
   },
   {
     icon: Globe,
-    title: 'Cultural Immersion',
-    desc: 'Located in Shamakhokho, you\'re at the heart of Luhya culture. Explore local traditions, crafts, and the vibrant spirit of Western Kenya.',
+    title: "Cultural Immersion",
+    desc: "Located in Shamakhokho, you're at the heart of Luhya culture. Explore local traditions, crafts, and the vibrant spirit of Western Kenya.",
   },
   {
     icon: Sun,
-    title: 'Total Serenity',
-    desc: 'Wake up to birdsong, misty mornings, and pure calm. This is a place where time slows down and your soul truly rests.',
+    title: "Total Serenity",
+    desc: "Wake up to birdsong, misty mornings, and pure calm. This is a place where time slows down and your soul truly rests.",
   },
 ];
 
@@ -30,10 +30,10 @@ function HighlightCard({ icon: Icon, title, desc, index }) {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setTimeout(() => entry.target.classList.add('visible'), index * 150);
+          setTimeout(() => entry.target.classList.add("visible"), index * 150);
         }
       },
-      { threshold: 0.15 }
+      { threshold: 0.15 },
     );
     if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
@@ -45,7 +45,9 @@ function HighlightCard({ icon: Icon, title, desc, index }) {
         <Icon size={20} className="text-gold" />
       </div>
       <div>
-        <h4 className="font-serif text-xl font-light text-white mb-2">{title}</h4>
+        <h4 className="font-serif text-xl font-light text-white mb-2">
+          {title}
+        </h4>
         <p className="text-white/60 text-sm leading-relaxed">{desc}</p>
       </div>
     </div>
@@ -58,8 +60,10 @@ export default function Experience() {
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) entry.target.classList.add('visible'); },
-      { threshold: 0.1 }
+      ([entry]) => {
+        if (entry.isIntersecting) entry.target.classList.add("visible");
+      },
+      { threshold: 0.1 },
     );
     if (textRef.current) observer.observe(textRef.current);
     if (imgRef.current) observer.observe(imgRef.current);
@@ -81,23 +85,32 @@ export default function Experience() {
             </h2>
             <div className="w-12 h-px bg-gold mb-8" />
             <p className="text-white/70 leading-relaxed mb-5">
-              Nestled at the edge of the ancient Kaimosi Forest in Shamakhokho, Vihiga, Kaimosi Vert Hotel was born from a vision: to create a sanctuary where luxury and nature exist in perfect harmony.
+              Nestled at the edge of the ancient Kaimosi Forest in Shamakhokho,
+              Vihiga, Kaimosi Vert Hotel was born from a vision: to create a
+              sanctuary where luxury and nature exist in perfect harmony.
             </p>
             <p className="text-white/70 leading-relaxed mb-5">
-              Every corner of our hotel is designed to bring you closer to nature — the scent of fresh earth, the sound of birds at dawn, the sight of mist rolling through the treetops. Yet none of this comes at the cost of your comfort.
+              Every corner of our hotel is designed to bring you closer to
+              nature — the scent of fresh earth, the sound of birds at dawn, the
+              sight of mist rolling through the treetops. Yet none of this comes
+              at the cost of your comfort.
             </p>
             <p className="text-white/70 leading-relaxed mb-8">
-              Whether you're a business traveler seeking focus, a couple on a romantic escape, or a family creating lasting memories — Kaimosi Vert Hotel is your home away from home in Western Kenya.
+              Whether you're a business traveler seeking focus, a couple on a
+              romantic escape, or a family creating lasting memories — Kaimosi
+              Vert Hotel is your home away from home in Western Kenya.
             </p>
             <div className="flex flex-wrap gap-8">
               {[
-                { num: '4.4★', label: 'Guest Rating' },
-                { num: '100%', label: 'Nature-Immersed' },
-                { num: '24/7', label: 'Guest Service' },
+                { num: "4.4★", label: "Guest Rating" },
+                { num: "100%", label: "Nature-Immersed" },
+                { num: "24/7", label: "Guest Service" },
               ].map((stat) => (
                 <div key={stat.label}>
                   <p className="font-serif text-3xl text-gold">{stat.num}</p>
-                  <p className="text-white/50 text-xs uppercase tracking-wider mt-1">{stat.label}</p>
+                  <p className="text-white/50 text-xs uppercase tracking-wider mt-1">
+                    {stat.label}
+                  </p>
                 </div>
               ))}
             </div>
@@ -156,10 +169,11 @@ export default function Experience() {
       <div
         className="relative py-24 overflow-hidden"
         style={{
-          backgroundImage: 'url(https://images.unsplash.com/photo-1535262412227-85541e910204?w=1920&q=80)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundAttachment: 'fixed',
+          backgroundImage:
+            "url(https://images.unsplash.com/photo-1535262412227-85541e910204?w=1920&q=80)",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundAttachment: "fixed",
         }}
       >
         <div className="absolute inset-0 bg-forest/75" />
