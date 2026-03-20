@@ -37,30 +37,32 @@ export default function BookingModal({ isOpen, onClose }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // 1️⃣ Save to Supabase
-    const { error } = await supabase.from("bookings").insert([
-      {
-        name: form.name,
-        date: form.checkin,
-        checkout: form.checkout,
-        guests: parseInt(form.guests),
-        room: form.room,
-        phone: form.phone,
-      },
-    ]);
+    const { data, error } = await supabase
+      .from("bookings")
+      .insert([
+        {
+          name: form.name,
+          date: form.checkin,
+          checkout: form.checkout,
+          guests: parseInt(form.guests),
+          room: form.room,
+          phone: form.phone,
+        },
+      ])
+      .select();
 
     if (error) {
-      console.error(error);
-      alert("Failed to save booking");
+      console.error("Supabase error:", error.message);
+      alert("Error: " + error.message);
       return;
     }
 
-    // 2️⃣ WhatsApp message
+    console.log("Inserted:", data);
+
     const msg = `Hello, I'd like to book a room at Kaimosi Vert Hotel.%0AName: ${form.name}%0ACheck-in: ${form.checkin}%0ACheck-out: ${form.checkout}%0AGuests: ${form.guests}%0ARoom: ${form.room || "Any Available"}%0APhone: ${form.phone}`;
 
     window.open(`https://wa.me/254794408594?text=${msg}`, "_blank");
 
-    // 3️⃣ UI feedback
     setSubmitted(true);
     setTimeout(() => {
       setSubmitted(false);
