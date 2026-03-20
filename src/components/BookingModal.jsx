@@ -20,6 +20,16 @@ export default function BookingModal({ isOpen, onClose }) {
     phone: "",
   });
   const [submitted, setSubmitted] = useState(false);
+  const [rooms, setRooms] = useState([]);
+
+  // Load available rooms from the rooms table
+  useEffect(() => {
+    const fetchRooms = async () => {
+      const { data, error } = await supabase.from("rooms").select("*");
+      if (!error) setRooms(data);
+    };
+    fetchRooms();
+  }, []);
 
   useEffect(() => {
     if (isOpen) document.body.style.overflow = "hidden";
@@ -33,41 +43,70 @@ export default function BookingModal({ isOpen, onClose }) {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  // ✅ UPDATED HANDLE SUBMIT (Supabase + WhatsApp)
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { data, error } = await supabase
-      .from("bookings")
-      .insert([
-        {
-          name: form.name,
-          date: form.checkin,
-          checkout: form.checkout,
-          guests: parseInt(form.guests),
-          room: form.room,
-          phone: form.phone,
-        },
-      ])
-      .select();
+    try {
+      // 1️⃣ Insert user into users table if not exists
+      const { data: existingUsers } = await supabase
+        .from("users")
+        .select("*")
+        .eq("phone", form.phone);
 
-    if (error) {
-      console.error("Supabase error:", error.message);
-      alert("Error: " + error.message);
-      return;
+      let userId;
+      if (existingUsers.length > 0) {
+        userId = existingUsers[0].id;
+      } else {
+        const { data: newUser, error: userError } = await supabase
+          .from("users")
+          .insert([{ name: form.name, phone: form.phone }])
+          .select()
+          .single();
+        if (userError) throw userError;
+        userId = newUser.id;
+      }
+
+      // 2️⃣ Find room ID (or null if any room)
+      let roomId = null;
+      if (form.room) {
+        const selectedRoom = rooms.find((r) => r.name === form.room);
+        if (selectedRoom) roomId = selectedRoom.id;
+      }
+
+      // 3️⃣ Insert booking
+      const { data: bookingData, error: bookingError } = await supabase
+        .from("bookings")
+        .insert([
+          {
+            user_id: userId,
+            room_id: roomId,
+            checkin: form.checkin,
+            checkout: form.checkout,
+            guests: parseInt(form.guests),
+            status: "pending",
+          },
+        ])
+        .select()
+        .single();
+
+      if (bookingError) throw bookingError;
+
+      console.log("Booking inserted:", bookingData);
+
+      // 4️⃣ Open WhatsApp
+      const msg = `Hello, I'd like to book a room at Kaimosi Vert Hotel.%0AName: ${form.name}%0ACheck-in: ${form.checkin}%0ACheck-out: ${form.checkout}%0AGuests: ${form.guests}%0ARoom: ${form.room || "Any Available"}%0APhone: ${form.phone}`;
+      window.open(`https://wa.me/254794408594?text=${msg}`, "_blank");
+
+      // 5️⃣ UI feedback
+      setSubmitted(true);
+      setTimeout(() => {
+        setSubmitted(false);
+        onClose();
+      }, 3000);
+    } catch (err) {
+      console.error("Error:", err.message || err);
+      alert("Booking failed: " + (err.message || "Unknown error"));
     }
-
-    console.log("Inserted:", data);
-
-    const msg = `Hello, I'd like to book a room at Kaimosi Vert Hotel.%0AName: ${form.name}%0ACheck-in: ${form.checkin}%0ACheck-out: ${form.checkout}%0AGuests: ${form.guests}%0ARoom: ${form.room || "Any Available"}%0APhone: ${form.phone}`;
-
-    window.open(`https://wa.me/254794408594?text=${msg}`, "_blank");
-
-    setSubmitted(true);
-    setTimeout(() => {
-      setSubmitted(false);
-      onClose();
-    }, 3000);
   };
 
   if (!isOpen) return null;
