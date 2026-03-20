@@ -231,7 +231,7 @@ export default function BookingModal({ isOpen, onClose }) {
                 href="tel:+254794408594"
                 className="text-forest hover:underline"
               >
-                +254 794408594
+                +254794408594
               </a>
             </p>
           </form>
