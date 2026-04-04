@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { X, Calendar, Users, Bed } from "lucide-react";
-import { supabase } from "../supabaseClient";
 
 const roomTypes = [
   "Standard Room",
@@ -10,7 +9,7 @@ const roomTypes = [
   "Family Room",
 ];
 
-export default function BookingModal({ isOpen, onClose, userId }) {
+export default function BookingModal({ isOpen, onClose }) {
   const [form, setForm] = useState({
     checkin: "",
     checkout: "",
@@ -33,32 +32,8 @@ export default function BookingModal({ isOpen, onClose, userId }) {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Insert booking into Supabase (match schema exactly)
-    const { data, error } = await supabase
-      .from("bookings")
-      .insert([
-        {
-          user_id: userId || null,
-          room_id: null, // can map later if you have a rooms table
-          checkin: form.checkin,
-          checkout: form.checkout,
-          guests: parseInt(form.guests, 10),
-          status: "pending",
-        },
-      ])
-      .select()
-      .single();
-
-    if (error) {
-      console.error("Supabase error:", error.message);
-      alert("Error: " + error.message);
-      return;
-    }
-
-    console.log("Inserted booking:", data);
 
     // WhatsApp message
     const msg = `Hello, I'd like to book a room at Kaimosi Vert Hotel.%0AName: ${form.name}%0ACheck-in: ${form.checkin}%0ACheck-out: ${form.checkout}%0AGuests: ${form.guests}%0ARoom: ${form.room || "Any Available"}%0APhone: ${form.phone}`;
